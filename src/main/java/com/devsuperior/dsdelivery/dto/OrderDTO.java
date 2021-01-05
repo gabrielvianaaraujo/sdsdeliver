@@ -1,30 +1,20 @@
-package com.devsuperior.dsdelivery.domain;
+package com.devsuperior.dsdelivery.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
+import com.devsuperior.dsdelivery.domain.Order;
 import com.devsuperior.dsdelivery.domain.enums.OrderStatus;
 
-@Entity
-@Table(name = "tb_order")
-public class Order implements Serializable{
+public class OrderDTO implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    
     private Integer id;
     private String address;
     private Double latitude;
@@ -32,24 +22,30 @@ public class Order implements Serializable{
     private Instant moment;
     private OrderStatus status;
 
-    @ManyToMany
-    @JoinTable(name = "tb_order_product",
-        joinColumns = @JoinColumn(name = "order_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Product> products = new HashSet<>();
+    private List<ProductDTO> products = new ArrayList<>();
 
 
-    public Order() {
+    public OrderDTO() {
     }
 
-    public Order(Integer id, String address, Double latitude, Double longitude, Instant moment, OrderStatus status) {
+
+    public OrderDTO(Integer id, String address, Double latitude, Double longitude, Instant moment, OrderStatus status) {
         this.id = id;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.moment = moment;
         this.status = status;
+    }
+
+    public OrderDTO(Order entity) {
+        id = entity.getId();
+        address = entity.getAdress();
+        latitude = entity.getLatitude();
+        longitude = entity.getLongitude();
+        moment = entity.getMoment();
+        status = entity.getStatus();
+        products = entity.getProducts().stream().map(x -> new ProductDTO(x)).collect(Collectors.toList());
     }
 
 
@@ -61,11 +57,11 @@ public class Order implements Serializable{
         this.id = id;
     }
 
-    public String getAdress() {
+    public String getAddress() {
         return this.address;
     }
 
-    public void setAdress(String address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -101,26 +97,8 @@ public class Order implements Serializable{
         this.status = status;
     }
 
-    public Set<Product> getProducts() {
+    public List<ProductDTO> getProducts() {
         return this.products;
     }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Order)) {
-            return false;
-        }
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
 
 }

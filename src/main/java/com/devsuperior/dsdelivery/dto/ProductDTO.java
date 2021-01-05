@@ -1,22 +1,13 @@
-package com.devsuperior.dsdelivery.domain;
+package com.devsuperior.dsdelivery.dto;
 
 import java.io.Serializable;
-import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.devsuperior.dsdelivery.domain.Product;
 
-@Entity
-@Table(name = "tb_product")
-public class Product implements Serializable{
+public class ProductDTO implements Serializable{
     
     private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer id;
     private String name;
     private Double price;
@@ -24,18 +15,25 @@ public class Product implements Serializable{
     private String imageUri;
 
 
-    public Product() {
+    public ProductDTO() {
     }
 
-
-    public Product(Integer id, String name, Double price, String description, String imageUri) {
+    public ProductDTO(Integer id, String name, Double price, String description, String imageUri) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.imageUri = imageUri;
     }
-
+    
+    public ProductDTO(Product entity) {
+        id = entity.getId();
+        name = entity.getName();
+        price = entity.getPrice();
+        description = entity.getDescription();
+        imageUri = entity.getImageUri();
+    }
+    
 
     public Integer getId() {
         return this.id;
@@ -76,22 +74,5 @@ public class Product implements Serializable{
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
     }
-    
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Product)) {
-            return false;
-        }
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-    
 }
